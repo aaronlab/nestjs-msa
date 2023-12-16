@@ -3,6 +3,7 @@ import { AuthModule } from './auth.module';
 import { Logger } from 'nestjs-pino';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerConfig } from '@app/common/config';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AuthModule);
@@ -28,6 +29,8 @@ async function bootstrap() {
     ],
   });
 
-  await app.listen(3001);
+  const configService = app.get(ConfigService);
+
+  await app.listen(configService.get('PORT'));
 }
 bootstrap();
