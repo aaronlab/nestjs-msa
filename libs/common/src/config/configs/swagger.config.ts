@@ -19,7 +19,13 @@ export class SwaggerConfig {
   private static readonly config = (params: SwaggerDocumentParams) => {
     const builder = new DocumentBuilder()
       .setTitle(`${params.name} API Docs`)
-      .setVersion(params.version);
+      .setVersion(params.version)
+      .addBearerAuth({
+        type: 'apiKey',
+        name: 'Authorization',
+        in: 'header',
+        bearerFormat: '',
+      });
 
     params.tags.forEach((tag) => {
       builder.addTag(tag.name, tag.description);

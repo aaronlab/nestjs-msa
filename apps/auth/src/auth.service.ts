@@ -1,43 +1,37 @@
 import { Injectable } from '@nestjs/common';
+import { UserDocument } from './models/users.schema';
+import { Response } from 'express';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { SigninDto } from './dto/signin.dto';
-import { SigninResponse } from './response/signin.response';
-import { UsersService } from './users/users.service';
+import { ITokenPayload } from './interfaces/token-payload.interface';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly configService: ConfigService,
     private readonly jwtService: JwtService,
-    private readonly usersService: UsersService,
   ) {}
 
   getHello(): string {
     return 'Hello World!';
   }
 
-  async signin(signinDto: SigninDto): Promise<SigninResponse> {
-    const user = await this.usersService.verifyUser(
-      signinDto.email,
-      signinDto.password,
-    );
-
-    const payload = {
-      email: signinDto.email,
+  async signin(user: UserDocument, res: Response) {
+    const payload: ITokenPayload = {
+      userId: user._id.toHexString(),
     };
 
     const expires = new Date();
     expires.setSeconds(
       expires.getSeconds() +
-        this.configService.get('JWT_EXPIRATION') * 24 * 60 * 60,
+        this.configService.get<number>('JWT_EXPIRATION') * 24 * 60 * 60,
     );
 
-    const accessToken = this.jwtService.sign(payload);
+    const token = this.jwtService.sign(payload);
 
-    return {
-      email: user.email,
-      accessToken,
-    };
+    res.cookie('Authentication', token, {
+      httpOnly: true,
+      expires,
+    });
   }
 }

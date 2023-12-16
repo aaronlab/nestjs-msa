@@ -1,8 +1,10 @@
-import { Body, Controller, Post, Res, UseGuards } from '@nestjs/common';
+import { Controller, Post, Res, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { LocalAuthGuard } from './guards/local-auth.guard';
-import { SigninDto } from './dto/signin.dto';
+import { CurrentUser } from './decorators/current-user.decorator';
+import { UserDocument } from './models/users.schema';
+import { Response } from 'express';
 
 @ApiTags('Auth')
 @Controller({
@@ -16,7 +18,11 @@ export class AuthController {
     summary: '로그인',
   })
   @Post('/signin')
-  signin(@Body() signinDto: SigninDto) {
-    return this.authService.signin(signinDto);
+  async signin(
+    @CurrentUser() user: UserDocument,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    await this.authService.signin(user, res);
+    res.send(user);
   }
 }
