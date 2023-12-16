@@ -26,6 +26,10 @@ async function bootstrap() {
         name: 'Users',
         description: '사용자',
       },
+      {
+        name: 'Auth',
+        description: '인증',
+      },
     ],
   });
 
