@@ -1,11 +1,11 @@
 import { NestFactory } from '@nestjs/core';
-import { ReservationsModule } from './reservations.module';
-import { ValidationPipe } from '@nestjs/common';
+import { AuthModule } from './auth.module';
 import { Logger } from 'nestjs-pino';
+import { ValidationPipe } from '@nestjs/common';
 import { SwaggerConfig } from '@app/common/config';
 
 async function bootstrap() {
-  const app = await NestFactory.create(ReservationsModule);
+  const app = await NestFactory.create(AuthModule);
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -18,16 +18,16 @@ async function bootstrap() {
   SwaggerConfig.setup({
     path: '/docs',
     app,
-    name: 'Auth',
+    name: 'Users',
     version: '1.0',
     tags: [
       {
-        name: 'Auth',
-        description: '인증',
+        name: 'Users',
+        description: '사용자',
       },
     ],
   });
 
-  await app.listen(3000);
+  await app.listen(3001);
 }
 bootstrap();
