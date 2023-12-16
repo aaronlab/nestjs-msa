@@ -9,5 +9,5 @@ export class SigninResponse {
   @ApiProperty({
     example: 'SuperDuperFancyToken',
   })
-  token: string;
+  accessToken: string;
 }

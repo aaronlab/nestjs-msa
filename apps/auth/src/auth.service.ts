@@ -1,6 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { UserDocument } from './models/users.schema';
-import { Response, response } from 'express';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { SigninDto } from './dto/signin.dto';
@@ -35,11 +33,11 @@ export class AuthService {
         this.configService.get('JWT_EXPIRATION') * 24 * 60 * 60,
     );
 
-    const token = this.jwtService.sign(payload);
+    const accessToken = this.jwtService.sign(payload);
 
     return {
       email: user.email,
-      token,
+      accessToken,
     };
   }
 }
