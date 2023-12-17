@@ -6,6 +6,7 @@ import { PAYMENTS_SERVICE } from '@app/common/constants';
 import { ClientProxy } from '@nestjs/microservices';
 import { map } from 'rxjs';
 import Stripe from 'stripe';
+import { UserDto } from '@app/common/dto';
 
 @Injectable()
 export class ReservationsService {
@@ -14,12 +15,15 @@ export class ReservationsService {
     @Inject(PAYMENTS_SERVICE) private readonly paymentsService: ClientProxy,
   ) {}
 
-  async create(createReservationDto: CreateReservationDto, userId: string) {
+  async create(
+    createReservationDto: CreateReservationDto,
+    { email, _id: userId }: UserDto,
+  ) {
     return this.paymentsService
-      .send<Stripe.Response<Stripe.PaymentIntent>>(
-        'create_charge',
-        createReservationDto.charge,
-      )
+      .send<Stripe.Response<Stripe.PaymentIntent>>('create_charge', {
+        ...createReservationDto.charge,
+        email,
+      })
       .pipe(
         map((res) => {
           return this.reservationRepository.create({
