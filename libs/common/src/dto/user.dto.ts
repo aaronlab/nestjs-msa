@@ -1,5 +1,5 @@
 export interface UserDto {
-  _id: string;
-  email: string;
-  password: string;
+  readonly _id: string;
+  readonly email: string;
+  readonly password: string;
 }

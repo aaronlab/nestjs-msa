@@ -22,12 +22,12 @@ async function bootstrap() {
   SwaggerConfig.setup({
     path: '/docs',
     app,
-    name: 'Auth',
+    name: 'Reservations',
     version: '1.0',
     tags: [
       {
-        name: 'Auth',
-        description: '인증',
+        name: 'Reservations',
+        description: '예약',
       },
     ],
   });

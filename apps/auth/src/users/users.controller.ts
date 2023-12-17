@@ -1,10 +1,10 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UsersService } from './users.service';
-import { ApiTags } from '@nestjs/swagger';
-import { CurrentUser } from '../../../../libs/common/src/decorators/current-user.decorator';
-import { UserDocument } from '../models/users.schema';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
+import { CurrentUser } from '@app/common/decorators';
+import { UserDocument } from '@app/common/models';
 
 @ApiTags('Users')
 @Controller('users')
@@ -16,8 +16,9 @@ export class UsersController {
   }
 
   @Get()
+  @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  getUser(@CurrentUser() user: UserDocument) {
+  getUser(@CurrentUser() user: UserDocument, @Req() req: Request) {
     return user;
   }
 }

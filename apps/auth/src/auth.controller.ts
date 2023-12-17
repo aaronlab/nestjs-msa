@@ -1,12 +1,13 @@
-import { Controller, Post, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post, Res, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { LocalAuthGuard } from './guards/local-auth.guard';
-import { UserDocument } from './models/users.schema';
 import { Response } from 'express';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { CurrentUser } from '@app/common/decorators';
+import { UserDocument } from '@app/common/models';
+import { SigninDto } from './users/dto/signin.dto';
 
 @ApiTags('Auth')
 @Controller({
@@ -22,10 +23,14 @@ export class AuthController {
   @Post('/signin')
   async signin(
     @CurrentUser() user: UserDocument,
+    @Body() body: SigninDto,
     @Res({ passthrough: true }) res: Response,
   ) {
-    await this.authService.signin(user, res);
-    res.send(user);
+    const accessToken = await this.authService.signin(user, res);
+    res.send({
+      ...user,
+      token: accessToken,
+    });
   }
 
   @UseGuards(JwtAuthGuard)

@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { UserDocument } from './models/users.schema';
 import { Response } from 'express';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { ITokenPayload } from './interfaces/token-payload.interface';
+import { UserDocument } from '@app/common/models';
 
 @Injectable()
 export class AuthService {
@@ -33,5 +33,7 @@ export class AuthService {
       httpOnly: true,
       expires,
     });
+
+    return token;
   }
 }
