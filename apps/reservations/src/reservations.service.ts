@@ -5,7 +5,6 @@ import { ReservationsRepository } from './reservation.repository';
 import { PAYMENTS_SERVICE } from '@app/common/constants';
 import { ClientProxy } from '@nestjs/microservices';
 import { map } from 'rxjs';
-import Stripe from 'stripe';
 import { UserDto } from '@app/common/dto';
 
 @Injectable()
@@ -20,7 +19,7 @@ export class ReservationsService {
     { email, _id: userId }: UserDto,
   ) {
     return this.paymentsService
-      .send<Stripe.Response<Stripe.PaymentIntent>>('create_charge', {
+      .send('create_charge', {
         ...createReservationDto.charge,
         email,
       })
